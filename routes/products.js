@@ -9,6 +9,19 @@ router.get("/", async (req, res) => {
   res.json(products);
 });
 
+// Obtener un producto por ID
+router.get("/:id", async (req, res) => {
+  try {
+    const producto = await Product.findOne({ id: req.params.id });
+    if (!producto) {
+      return res.status(404).json({ message: "Producto no encontrado" });
+    }
+    res.json(producto);
+  } catch (error) {
+    res.status(500).json({ message: "Error al obtener producto", error });
+  }
+});
+
 // Agregar un producto
 router.post("/", async (req, res) => {
   const nuevo = new Product(req.body);

@@ -9,9 +9,9 @@
     "stock": 1,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 1,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 1,
+        "costoUnitario": null
       }
     ]
   },
@@ -25,9 +25,9 @@
     "stock": 4,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 4,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 4,
+        "costoUnitario": null
       }
     ]
   },
@@ -41,9 +41,9 @@
     "stock": 2,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 2,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 2,
+        "costoUnitario": null
       }
     ]
   },
@@ -57,9 +57,9 @@
     "stock": 2,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 2,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 2,
+        "costoUnitario": null
       }
     ]
   },
@@ -73,9 +73,9 @@
     "stock": 2,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 2,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 2,
+        "costoUnitario": null
       }
     ]
   },
@@ -89,9 +89,9 @@
     "stock": 2,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 2,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 2,
+        "costoUnitario": null
       }
     ]
   },
@@ -105,9 +105,9 @@
     "stock": 4,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 4,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 4,
+        "costoUnitario": null
       }
     ]
   },
@@ -121,9 +121,9 @@
     "stock": 1,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 1,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 1,
+        "costoUnitario": null
       }
     ]
   },
@@ -137,9 +137,9 @@
     "stock": 4,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 4,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 4,
+        "costoUnitario": null
       }
     ]
   },
@@ -153,9 +153,9 @@
     "stock": 2,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 2,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 2,
+        "costoUnitario": null
       }
     ]
   },
@@ -169,9 +169,9 @@
     "stock": 2,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 2,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 2,
+        "costoUnitario": null
       }
     ]
   },
@@ -185,9 +185,9 @@
     "stock": 3,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 3,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 3,
+        "costoUnitario": null
       }
     ]
   },
@@ -201,9 +201,9 @@
     "stock": 3,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 3,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 3,
+        "costoUnitario": null
       }
     ]
   },
@@ -217,9 +217,9 @@
     "stock": 0,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 0,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 0,
+        "costoUnitario": null
       }
     ]
   },
@@ -233,9 +233,9 @@
     "stock": 1,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 1,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 1,
+        "costoUnitario": null
       }
     ]
   },
@@ -249,9 +249,9 @@
     "stock": 3,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 3,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 3,
+        "costoUnitario": null
       }
     ]
   },
@@ -265,9 +265,9 @@
     "stock": 999,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 999,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 999,
+        "costoUnitario": null
       }
     ]
   },
@@ -281,9 +281,9 @@
     "stock": 999,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 999,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 999,
+        "costoUnitario": null
       }
     ]
   },
@@ -297,9 +297,9 @@
     "stock": 1,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 1,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 1,
+        "costoUnitario": null
       }
     ]
   },
@@ -313,9 +313,9 @@
     "stock": 2,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 2,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 2,
+        "costoUnitario": null
       }
     ]
   },
@@ -329,9 +329,9 @@
     "stock": 0,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 0,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 0,
+        "costoUnitario": null
       }
     ]
   },
@@ -345,9 +345,9 @@
     "stock": 1,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 1,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 1,
+        "costoUnitario": null
       }
     ]
   },
@@ -361,9 +361,9 @@
     "stock": 19,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 19,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 19,
+        "costoUnitario": null
       }
     ]
   },
@@ -377,9 +377,9 @@
     "stock": 1,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 1,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 1,
+        "costoUnitario": null
       }
     ]
   },
@@ -393,9 +393,9 @@
     "stock": 1,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 1,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 1,
+        "costoUnitario": null
       }
     ]
   },
@@ -409,9 +409,9 @@
     "stock": 1,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 1,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 1,
+        "costoUnitario": null
       }
     ]
   },
@@ -425,9 +425,9 @@
     "stock": 1,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 1,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 1,
+        "costoUnitario": null
       }
     ]
   },
@@ -441,9 +441,9 @@
     "stock": 2,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 2,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 2,
+        "costoUnitario": null
       }
     ]
   },
@@ -457,9 +457,9 @@
     "stock": 1,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 1,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 1,
+        "costoUnitario": null
       }
     ]
   },
@@ -473,9 +473,9 @@
     "stock": 1,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 1,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 1,
+        "costoUnitario": null
       }
     ]
   },
@@ -485,13 +485,13 @@
     "description": "Reloj Despertador Con Proyector De Estrellas",
     "category": "iluminacion",
     "price": 15000,
-    "image": "https://oportunidades-vip.com.ar/wp-content/uploads/2025/07/Reloj_Despertador_Proyector_Estrellas_Con_Musica_Y_Alarma_D_900218-MLA33074242954_122019-O.jpg",
+    "image": "https://oportcantidad-vip.com.ar/wp-content/uploads/2025/07/Reloj_Despertador_Proyector_Estrellas_Con_Musica_Y_Alarma_D_900218-MLA33074242954_122019-O.jpg",
     "stock": 1,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 1,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 1,
+        "costoUnitario": null
       }
     ]
   },
@@ -505,16 +505,16 @@
     "stock": 1,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 1,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 1,
+        "costoUnitario": null
       }
     ]
   },
   {
     "id": 33,
     "name": "Tapa de válvula luminosa",
-    "description": "Tapa de válvula luminosa VERDE ROJO AMARILLO AZUL LILA para auto, moto o bici (2 unidades)",
+    "description": "Tapa de válvula luminosa VERDE ROJO AMARILLO AZUL LILA para auto, moto o bici (2 cantidad)",
     "category": "iluminacion",
     "price": 10000,
     "image": null,
@@ -528,9 +528,9 @@
     "stock": 999,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 999,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 999,
+        "costoUnitario": null
       }
     ]
   },
@@ -544,9 +544,9 @@
     "stock": 999,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 999,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 999,
+        "costoUnitario": null
       }
     ]
   },
@@ -560,9 +560,9 @@
     "stock": 999,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 999,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 999,
+        "costoUnitario": null
       }
     ]
   },
@@ -576,9 +576,9 @@
     "stock": 999,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 999,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 999,
+        "costoUnitario": null
       }
     ]
   },
@@ -592,9 +592,9 @@
     "stock": 1,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 1,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 1,
+        "costoUnitario": null
       }
     ]
   },
@@ -608,9 +608,9 @@
     "stock": 1,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 1,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 1,
+        "costoUnitario": null
       }
     ]
   },
@@ -624,9 +624,9 @@
     "stock": 1,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 1,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 1,
+        "costoUnitario": null
       }
     ]
   },
@@ -640,9 +640,9 @@
     "stock": 1,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 1,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 1,
+        "costoUnitario": null
       }
     ]
   },
@@ -656,9 +656,9 @@
     "stock": 999,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 999,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 999,
+        "costoUnitario": null
       }
     ]
   },
@@ -672,9 +672,9 @@
     "stock": 1,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 1,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 1,
+        "costoUnitario": null
       }
     ]
   },
@@ -688,9 +688,9 @@
     "stock": 4,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 4,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 4,
+        "costoUnitario": null
       }
     ]
   },
@@ -704,9 +704,9 @@
     "image": "https://assets.unileversolutions.com/v1/133018309.png?im=AspectCrop=(985,985);Resize=(985,985)",
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 1,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 1,
+        "costoUnitario": null
       }
     ]
   },
@@ -720,9 +720,9 @@
     "image": "https://www.lorealparis.com.ar/-/media/project/loreal/brand-sites/oap/americas/ar/articles/dream-liso/menos-mb.png",
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 4,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 4,
+        "costoUnitario": null
       }
     ]
   },
@@ -736,9 +736,9 @@
     "image": "https://media01.farmaciaslider.com.ar/27882-thickbox_default/cicatricure-crema-age-care-aclarante-50-g.jpg",
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 3,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 3,
+        "costoUnitario": null
       }
     ]
   },
@@ -752,9 +752,9 @@
     "image": "https://media03.farmaciaslider.com.ar/39769-thickbox_default/elvive-glycolic-gloss-serum-x-100-ml.jpg",
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 1,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 1,
+        "costoUnitario": null
       }
     ]
   },
@@ -768,9 +768,9 @@
     "image": "https://media02.farmaciaslider.com.ar/33281-thickbox_default/algabo-mundial-messi-300ml-jab-liq.jpg",
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 2,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 2,
+        "costoUnitario": null
       }
     ]
   },
@@ -784,9 +784,9 @@
     "image": "https://pedidosfarma.vtexassets.com/arquivos/ids/195229-800-800?v=638150075881630000&width=800&height=800&aspect=true",
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 2,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 2,
+        "costoUnitario": null
       }
     ]
   },
@@ -800,9 +800,9 @@
     "stock": 2,
     "lotes": [
       {
-        "fecha_compra": "2025-01-01",
-        "unidades": 2,
-        "precio_costo": null
+        "fechaIngreso": "2025-01-01",
+        "cantidad": 2,
+        "costoUnitario": null
       }
     ]
   }
