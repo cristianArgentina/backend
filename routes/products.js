@@ -45,4 +45,69 @@ router.delete("/:id", async (req, res) => {
   res.json({ message: "Producto eliminado" });
 });
 
+// GET /products/:id/lotes
+router.get("/:id/lotes", async (req, res) => {
+  try {
+    const producto = await Product.findOne({ id: req.params.id });
+    if (!producto) return res.status(404).json({ message: "Producto no encontrado" });
+
+    res.json(producto.lotes);
+  } catch (error) {
+    res.status(500).json({ error: "Error al obtener lotes" });
+  }
+});
+
+// POST /products/:id/lotes
+router.post("/:id/lotes", async (req, res) => {
+  try {
+    const producto = await Product.findOne({ id: req.params.id });
+    if (!producto) return res.status(404).json({ message: "Producto no encontrado" });
+
+    producto.lotes.push(req.body);
+    producto.stock += req.body.cantidad; // actualizar stock total
+    await producto.save();
+
+    res.json(producto);
+  } catch (error) {
+    res.status(500).json({ error: "Error al agregar lote" });
+  }
+});
+
+// DELETE /products/:id/lotes/:loteIndex
+router.delete("/:id/lotes/:loteId", async (req, res) => {
+  try {
+    const { id, loteId } = req.params;
+
+    // Buscar el producto
+    const producto = await Product.findOne({ id });
+    if (!producto) {
+      return res.status(404).json({ message: "Producto no encontrado" });
+    }
+
+    // Buscar el lote por su _id
+    const loteIndex = producto.lotes.findIndex(
+      (lote) => lote._id.toString() === loteId
+    );
+
+    if (loteIndex === -1) {
+      return res.status(404).json({ message: "Lote no encontrado" });
+    }
+
+    // Eliminar el lote y actualizar stock
+    const loteEliminado = producto.lotes.splice(loteIndex, 1)[0];
+    producto.stock -= loteEliminado.cantidad;
+
+    await producto.save();
+
+    res.json({
+      message: "Lote eliminado correctamente",
+      producto
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al eliminar lote" });
+  }
+});
+
+
 export default router;
