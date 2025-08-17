@@ -6,6 +6,7 @@ const router = express.Router();
 
 // Registrar venta (FIFO)
 router.post("/", async (req, res) => {
+    try {
   const { productId, cantidad, precioVenta } = req.body;
 
   const producto = await Product.findOne({ id: productId });
@@ -38,11 +39,16 @@ router.post("/", async (req, res) => {
     cantidad,
     precioVenta,
     precioCosto: precioCostoTotal / cantidad,
-    ganancia: gananciaTotal
+    ganancia: gananciaTotal,
+    fecha: new Date() 
   });
   await venta.save();
 
-  res.json({ message: "Venta registrada", venta });
+    res.json({ message: "Venta registrada", venta });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error al registrar venta" });
+  }
 });
 
 // Obtener todas las ventas
