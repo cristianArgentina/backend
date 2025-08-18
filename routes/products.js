@@ -27,11 +27,20 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// Agregar un producto
+// Crear un nuevo producto
 router.post("/", async (req, res) => {
-  const nuevo = new Product(req.body);
-  await nuevo.save();
-  res.json(nuevo);
+  try {
+    const nuevo = new Product({
+      id: Date.now(), // 👈 id autogenerado con timestamp
+      ...req.body
+    });
+
+    await nuevo.save();
+    res.status(201).json(nuevo);
+  } catch (err) {
+    console.error("❌ Error al crear producto:", err);
+    res.status(400).json({ error: err.message });
+  }
 });
 
 // Actualizar un producto
