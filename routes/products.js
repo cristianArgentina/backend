@@ -14,6 +14,10 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/ping", (req, res) => {
+  res.status(200).send("pong");
+});
+
 // Obtener un producto por ID
 router.get("/:id", async (req, res) => {
   try {
@@ -122,10 +126,5 @@ router.delete("/:id/lotes/:loteId", async (req, res) => {
     res.status(500).json({ error: "Error al eliminar lote" });
   }
 });
-
-router.get("/ping", (req, res) => {
-  res.status(200).send("pong");
-});
-
 
 export default router;
