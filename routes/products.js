@@ -123,5 +123,9 @@ router.delete("/:id/lotes/:loteId", async (req, res) => {
   }
 });
 
+router.get("/ping", (req, res) => {
+  res.status(200).send("pong");
+});
+
 
 export default router;
