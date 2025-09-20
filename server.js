@@ -9,23 +9,30 @@ dotenv.config();
 const app = express();
 
 app.use(cors({
-  origin: "https://cristianargentina.github.io", // tu frontend
+  origin: "https://cristianargentina.github.io", // tu frontend en GitHub Pages
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
 app.use(express.json());
 
-// Rutas
+// Rutas API
 app.use("/api/products", productRoutes);
 app.use("/api/sales", salesRoutes);
 
-// Conexión a MongoDB
+// Ruta de prueba (root)
+app.get("/", (req, res) => {
+  res.send("Backend funcionando en Cyclic 🚀");
+});
+
+// Conexión a MongoDB y arranque del server
+const PORT = process.env.PORT || 3000;
+
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
     console.log("✅ Conectado a MongoDB Atlas");
-    app.listen(process.env.PORT, () => {
-      console.log(`🚀 Servidor escuchando en puerto ${process.env.PORT}`);
+    app.listen(PORT, () => {
+      console.log(`🚀 Servidor escuchando en puerto ${PORT}`);
     });
   })
   .catch(err => console.error("❌ Error conectando a MongoDB:", err));
