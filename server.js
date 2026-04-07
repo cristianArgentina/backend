@@ -20,7 +20,7 @@ app.use(express.json());
 // Rutas API
 app.use("/api/products", productRoutes);
 app.use("/api/sales", salesRoutes);
-app.use("/entregas", entregasRoutes);
+app.use("/api/entregas", entregasRoutes);
 
 // Ruta de prueba (root)
 app.get("/", (req, res) => {
