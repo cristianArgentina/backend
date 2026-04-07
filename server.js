@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import productRoutes from "./routes/products.js";
 import salesRoutes from "./routes/sales.js";
+import entregasRoutes from "./routes/entregas.js";
 
 dotenv.config();
 const app = express();
@@ -19,6 +20,7 @@ app.use(express.json());
 // Rutas API
 app.use("/api/products", productRoutes);
 app.use("/api/sales", salesRoutes);
+app.use("/entregas", entregasRoutes);
 
 // Ruta de prueba (root)
 app.get("/", (req, res) => {
