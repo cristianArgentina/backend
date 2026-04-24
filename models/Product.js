@@ -6,6 +6,23 @@ const lotSchema = new mongoose.Schema({
   fechaIngreso: { type: Date, default: Date.now } // fecha de compra
 });
 
+/* 🧩 Items de combo */
+
+const comboItemSchema = new mongoose.Schema({
+
+  productId: {
+    type: Number,
+    required: true
+  },
+
+  qty: {
+    type: Number,
+    required: true,
+    min: 1
+  }
+
+});
+
 const productSchema = new mongoose.Schema({
   id: { type: Number, required: true, unique: true },
   name: { type: String, required: true },
@@ -15,7 +32,18 @@ const productSchema = new mongoose.Schema({
   image: { type: String, default: null }, // permite null si no hay imagen
   videos: { type: [String], default: [] }, // IDs de YouTube
   stock: { type: Number, required: true },
-  lotes: { type: [lotSchema], default: [] }
+  lotes: { type: [lotSchema], default: [] },
+    /* 🧩 NUEVO */
+
+  isCombo: {
+    type: Boolean,
+    default: false
+  },
+
+  combo: {
+    type: [comboItemSchema],
+    default: []
+  }
 }, { timestamps: true });
 
 export default mongoose.model("Product", productSchema);
