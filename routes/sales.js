@@ -4,6 +4,25 @@ import Sale from "../models/Sale.js";
 
 const router = express.Router();
 
+async function validarStockFIFO(producto, cantidad) {
+
+  let disponible = 0;
+
+  if (!producto.lotes)
+    return false;
+
+  for (const lote of producto.lotes) {
+
+    disponible += lote.cantidad;
+
+    if (disponible >= cantidad)
+      return true;
+
+  }
+
+  return false;
+
+}
 // Registrar venta (FIFO)
 router.post("/", async (req, res) => {
   try {
@@ -20,6 +39,41 @@ router.post("/", async (req, res) => {
     /* ===================================== */
 
     if (producto.isCombo) {
+
+      /* VALIDAR STOCK DE TODOS LOS INTERNOS */
+      for (const item of producto.combo) {
+
+        const productoInterno =
+          await Product.findOne({
+            id: item.productId
+          });
+
+        if (!productoInterno)
+          return res.status(404).json({
+            error: "Producto interno no encontrado"
+          });
+
+        const cantidadNecesaria =
+          item.qty * cantidad;
+
+        const ok =
+          await validarStockFIFO(
+            productoInterno,
+            cantidadNecesaria
+          );
+
+        if (!ok) {
+
+          return res.status(400).json({
+
+            error:
+              `Stock insuficiente para ${productoInterno.name}`
+
+          });
+
+        }
+
+      }
 
       for (const item of producto.combo) {
 
@@ -102,6 +156,23 @@ router.post("/", async (req, res) => {
     /* ===================================== */
     /* 📦 PRODUCTO NORMAL (tu lógica actual) */
     /* ===================================== */
+
+    const ok =
+      await validarStockFIFO(
+        producto,
+        cantidad
+      );
+
+    if (!ok) {
+
+      return res.status(400).json({
+
+        error:
+          "Stock insuficiente"
+
+      });
+
+    }
 
     let cantidadRestante = cantidad;
     // FIFO: consumir lotes antiguos primero
