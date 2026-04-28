@@ -1,6 +1,7 @@
 import express from "express";
 import Product from "../models/Product.js";
 import Sale from "../models/Sale.js";
+import mongoose from "mongoose";
 
 const router = express.Router();
 
@@ -25,105 +26,115 @@ async function validarStockFIFO(producto, cantidad) {
 }
 // Registrar venta (FIFO)
 router.post("/", async (req, res) => {
+
+  const session =
+    await mongoose.startSession();
+
   try {
-    const { productId, cantidad, precioVenta } = req.body;
 
-    const producto = await Product.findOne({ id: productId });
-    if (!producto) return res.status(404).json({ error: "Producto no encontrado" });
+    session.startTransaction();
 
-    let gananciaTotal = 0;
+    const {
+      productId,
+      cantidad,
+      precioVenta
+    } = req.body;
+
+    const producto =
+      await Product.findOne({
+        id: productId
+      }).session(session);
+
+    if (!producto)
+      throw new Error(
+        "Producto no encontrado"
+      );
+
     let precioCostoTotal = 0;
+    let gananciaTotal = 0;
 
-    /* ===================================== */
+    /* =============================== */
     /* 🧠 SI ES COMBO */
-    /* ===================================== */
+    /* =============================== */
 
     if (producto.isCombo) {
 
-      /* VALIDAR STOCK DE TODOS LOS INTERNOS */
+      /* VALIDAR STOCK */
+
       for (const item of producto.combo) {
 
-        const productoInterno =
+        const interno =
           await Product.findOne({
             id: item.productId
-          });
+          }).session(session);
 
-        if (!productoInterno)
-          return res.status(404).json({
-            error: "Producto interno no encontrado"
-          });
-
-        const cantidadNecesaria =
-          item.qty * cantidad;
-
-        const ok =
-          await validarStockFIFO(
-            productoInterno,
-            cantidadNecesaria
+        if (!interno)
+          throw new Error(
+            "Producto interno no encontrado"
           );
 
-        if (!ok) {
+        let disponible =
+          interno.lotes.reduce(
+            (acc, l) =>
+              acc + l.cantidad,
+            0
+          );
 
-          return res.status(400).json({
+        const necesario =
+          item.qty * cantidad;
 
-            error:
-              `Stock insuficiente para ${productoInterno.name}`
-
-          });
-
-        }
+        if (disponible < necesario)
+          throw new Error(
+            `Stock insuficiente para ${interno.name}`
+          );
 
       }
 
+      /* CONSUMIR FIFO */
+
       for (const item of producto.combo) {
 
-        const productoInterno =
+        const interno =
           await Product.findOne({
             id: item.productId
-          });
+          }).session(session);
 
-        if (!productoInterno)
-          continue;
-
-        let cantidadRestante =
+        let restante =
           item.qty * cantidad;
 
-        /* FIFO interno */
-
         while (
-          cantidadRestante > 0 &&
-          productoInterno.lotes.length > 0
+          restante > 0 &&
+          interno.lotes.length > 0
         ) {
 
           const lote =
-            productoInterno.lotes[0];
+            interno.lotes[0];
 
           const usado =
             Math.min(
               lote.cantidad,
-              cantidadRestante
+              restante
             );
 
-          cantidadRestante -= usado;
+          restante -= usado;
           lote.cantidad -= usado;
 
           precioCostoTotal +=
             usado * lote.costoUnitario;
 
-          if (lote.cantidad === 0) {
-            productoInterno.lotes.shift();
-          }
+          if (lote.cantidad === 0)
+            interno.lotes.shift();
 
         }
 
-        productoInterno.stock -=
+        interno.stock -=
           item.qty * cantidad;
 
-        await productoInterno.save();
+        await interno.save({
+          session
+        });
 
       }
-
-      /* costo promedio del combo */
 
       const costoPromedio =
         precioCostoTotal / cantidad;
@@ -132,82 +143,125 @@ router.post("/", async (req, res) => {
         (precioVenta * cantidad)
         - precioCostoTotal;
 
-      /* registrar venta */
-
-      const venta =
-        new Sale({
-          productId,
-          cantidad,
-          precioVenta,
-          precioCosto: costoPromedio,
-          ganancia: gananciaTotal,
-          fecha: new Date()
-        });
-
-      await venta.save();
-
-      return res.json({
-        message: "Venta de combo registrada",
-        venta
-      });
-
     }
 
-    /* ===================================== */
-    /* 📦 PRODUCTO NORMAL (tu lógica actual) */
-    /* ===================================== */
+    /* =============================== */
+    /* 📦 PRODUCTO NORMAL */
+    /* =============================== */
 
-    const ok =
-      await validarStockFIFO(
-        producto,
-        cantidad
-      );
+    else {
 
-    if (!ok) {
+      let restante = cantidad;
 
-      return res.status(400).json({
+      let disponible =
+        producto.lotes.reduce(
+          (acc, l) =>
+            acc + l.cantidad,
+          0
+        );
 
-        error:
+      if (disponible < cantidad)
+        throw new Error(
           "Stock insuficiente"
+        );
 
+      while (
+        restante > 0 &&
+        producto.lotes.length > 0
+      ) {
+
+        const lote =
+          producto.lotes[0];
+
+        const usado =
+          Math.min(
+            lote.cantidad,
+            restante
+          );
+
+        restante -= usado;
+        lote.cantidad -= usado;
+
+        precioCostoTotal +=
+          usado * lote.costoUnitario;
+
+        gananciaTotal +=
+          usado * (
+            precioVenta
+            - lote.costoUnitario
+          );
+
+        if (lote.cantidad === 0)
+          producto.lotes.shift();
+
+      }
+
+      producto.stock -= cantidad;
+
+      await producto.save({
+        session
       });
 
     }
 
-    let cantidadRestante = cantidad;
-    // FIFO: consumir lotes antiguos primero
-    while (cantidadRestante > 0 && producto.lotes.length > 0) {
-      const lote = producto.lotes[0];
-      const usado = Math.min(lote.cantidad, cantidadRestante);
-      cantidadRestante -= usado;
-      lote.cantidad -= usado;
+    /* =============================== */
+    /* REGISTRAR VENTA */
+    /* =============================== */
 
-      precioCostoTotal += usado * lote.costoUnitario;
-      gananciaTotal += usado * (precioVenta - lote.costoUnitario);
+    const venta =
+      new Sale({
 
-      if (lote.cantidad === 0) {
-        producto.lotes.shift();
-      }
-    }
+        productId,
+        cantidad,
+        precioVenta,
 
-    producto.stock -= cantidad;
-    await producto.save();
+        precioCosto:
+          precioCostoTotal /
+          cantidad,
 
-    const venta = new Sale({
-      productId,
-      cantidad,
-      precioVenta,
-      precioCosto: precioCostoTotal / cantidad,
-      ganancia: gananciaTotal,
-      fecha: new Date()
+        ganancia:
+          gananciaTotal,
+
+        fecha:
+          new Date()
+
+      });
+
+    await venta.save({
+      session
     });
-    await venta.save();
 
-    res.json({ message: "Venta registrada", venta });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Error al registrar venta" });
+    await session.commitTransaction();
+
+    session.endSession();
+
+    res.json({
+
+      message:
+        "Venta registrada correctamente",
+
+      venta
+
+    });
+
   }
+
+  catch (err) {
+
+    await session.abortTransaction();
+
+    session.endSession();
+
+    console.error(err);
+
+    res.status(400).json({
+
+      error: err.message
+
+    });
+
+  }
+
 });
 
 // Eliminar venta
