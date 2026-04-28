@@ -6,43 +6,131 @@ const router = express.Router();
 
 // Registrar venta (FIFO)
 router.post("/", async (req, res) => {
-    try {
-  const { productId, cantidad, precioVenta } = req.body;
+  try {
+    const { productId, cantidad, precioVenta } = req.body;
 
-  const producto = await Product.findOne({ id: productId });
-  if (!producto) return res.status(404).json({ error: "Producto no encontrado" });
+    const producto = await Product.findOne({ id: productId });
+    if (!producto) return res.status(404).json({ error: "Producto no encontrado" });
 
-  let cantidadRestante = cantidad;
-  let gananciaTotal = 0;
-  let precioCostoTotal = 0;
+    let gananciaTotal = 0;
+    let precioCostoTotal = 0;
 
-  // FIFO: consumir lotes antiguos primero
-  while (cantidadRestante > 0 && producto.lotes.length > 0) {
-    const lote = producto.lotes[0];
-    const usado = Math.min(lote.cantidad, cantidadRestante);
-    cantidadRestante -= usado;
-    lote.cantidad -= usado;
+    /* ===================================== */
+    /* 🧠 SI ES COMBO */
+    /* ===================================== */
 
-    precioCostoTotal += usado * lote.costoUnitario;
-    gananciaTotal += usado * (precioVenta - lote.costoUnitario);
+    if (producto.isCombo) {
 
-    if (lote.cantidad === 0) {
-      producto.lotes.shift();
+      for (const item of producto.combo) {
+
+        const productoInterno =
+          await Product.findOne({
+            id: item.productId
+          });
+
+        if (!productoInterno)
+          continue;
+
+        let cantidadRestante =
+          item.qty * cantidad;
+
+        /* FIFO interno */
+
+        while (
+          cantidadRestante > 0 &&
+          productoInterno.lotes.length > 0
+        ) {
+
+          const lote =
+            productoInterno.lotes[0];
+
+          const usado =
+            Math.min(
+              lote.cantidad,
+              cantidadRestante
+            );
+
+          cantidadRestante -= usado;
+          lote.cantidad -= usado;
+
+          precioCostoTotal +=
+            usado * lote.costoUnitario;
+
+          if (lote.cantidad === 0) {
+            productoInterno.lotes.shift();
+          }
+
+        }
+
+        productoInterno.stock -=
+          item.qty * cantidad;
+
+        await productoInterno.save();
+
+      }
+
+      /* costo promedio del combo */
+
+      const costoPromedio =
+        precioCostoTotal / cantidad;
+
+      gananciaTotal =
+        (precioVenta * cantidad)
+        - precioCostoTotal;
+
+      /* registrar venta */
+
+      const venta =
+        new Sale({
+          productId,
+          cantidad,
+          precioVenta,
+          precioCosto: costoPromedio,
+          ganancia: gananciaTotal,
+          fecha: new Date()
+        });
+
+      await venta.save();
+
+      return res.json({
+        message: "Venta de combo registrada",
+        venta
+      });
+
     }
-  }
 
-  producto.stock -= cantidad;
-  await producto.save();
+    /* ===================================== */
+    /* 📦 PRODUCTO NORMAL (tu lógica actual) */
+    /* ===================================== */
 
-  const venta = new Sale({
-    productId,
-    cantidad,
-    precioVenta,
-    precioCosto: precioCostoTotal / cantidad,
-    ganancia: gananciaTotal,
-    fecha: new Date() 
-  });
-  await venta.save();
+    let cantidadRestante = cantidad;
+    // FIFO: consumir lotes antiguos primero
+    while (cantidadRestante > 0 && producto.lotes.length > 0) {
+      const lote = producto.lotes[0];
+      const usado = Math.min(lote.cantidad, cantidadRestante);
+      cantidadRestante -= usado;
+      lote.cantidad -= usado;
+
+      precioCostoTotal += usado * lote.costoUnitario;
+      gananciaTotal += usado * (precioVenta - lote.costoUnitario);
+
+      if (lote.cantidad === 0) {
+        producto.lotes.shift();
+      }
+    }
+
+    producto.stock -= cantidad;
+    await producto.save();
+
+    const venta = new Sale({
+      productId,
+      cantidad,
+      precioVenta,
+      precioCosto: precioCostoTotal / cantidad,
+      ganancia: gananciaTotal,
+      fecha: new Date()
+    });
+    await venta.save();
 
     res.json({ message: "Venta registrada", venta });
   } catch (err) {
