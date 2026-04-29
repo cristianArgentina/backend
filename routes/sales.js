@@ -27,8 +27,7 @@ async function validarStockFIFO(producto, cantidad) {
 // Registrar venta (FIFO)
 router.post("/", async (req, res) => {
 
-  const session =
-    await mongoose.startSession();
+  const session = await mongoose.startSession();
 
   try {
 
@@ -41,172 +40,115 @@ router.post("/", async (req, res) => {
     } = req.body;
 
     const producto =
-      await Product.findOne({
-        id: productId
-      }).session(session);
+      await Product.findOne({ id: productId })
+        .session(session);
 
     if (!producto)
-      throw new Error(
-        "Producto no encontrado"
-      );
+      throw new Error("Producto no encontrado");
 
     let precioCostoTotal = 0;
-    let gananciaTotal = 0;
+    let items = [];
 
-    /* =============================== */
-    /* 🧠 SI ES COMBO */
-    /* =============================== */
+    /* ===================================================== */
+    /* 🧠 FUNCION FIFO (REUTILIZABLE) */
+    /* ===================================================== */
 
-    if (producto.isCombo) {
+    const consumirFIFO = async (productoDB, cantidadNecesaria) => {
 
-      /* VALIDAR STOCK */
+      let restante = cantidadNecesaria;
 
-      for (const item of producto.combo) {
+      while (restante > 0 && productoDB.lotes.length > 0) {
 
-        const interno =
-          await Product.findOne({
-            id: item.productId
-          }).session(session);
-
-        if (!interno)
-          throw new Error(
-            "Producto interno no encontrado"
-          );
-
-        let disponible =
-          interno.lotes.reduce(
-            (acc, l) =>
-              acc + l.cantidad,
-            0
-          );
-
-        const necesario =
-          item.qty * cantidad;
-
-        if (disponible < necesario)
-          throw new Error(
-            `Stock insuficiente para ${interno.name}`
-          );
-
-      }
-
-      /* CONSUMIR FIFO */
-
-      for (const item of producto.combo) {
-
-        const interno =
-          await Product.findOne({
-            id: item.productId
-          }).session(session);
-
-        let restante =
-          item.qty * cantidad;
-
-        while (
-          restante > 0 &&
-          interno.lotes.length > 0
-        ) {
-
-          const lote =
-            interno.lotes[0];
-
-          const usado =
-            Math.min(
-              lote.cantidad,
-              restante
-            );
-
-          restante -= usado;
-          lote.cantidad -= usado;
-
-          precioCostoTotal +=
-            usado * lote.costoUnitario;
-
-          if (lote.cantidad === 0)
-            interno.lotes.shift();
-
-        }
-
-        interno.stock -=
-          item.qty * cantidad;
-
-        await interno.save({
-          session
-        });
-
-      }
-
-      const costoPromedio =
-        precioCostoTotal / cantidad;
-
-      gananciaTotal =
-        (precioVenta * cantidad)
-        - precioCostoTotal;
-
-    }
-
-    /* =============================== */
-    /* 📦 PRODUCTO NORMAL */
-    /* =============================== */
-
-    else {
-
-      let restante = cantidad;
-
-      let disponible =
-        producto.lotes.reduce(
-          (acc, l) =>
-            acc + l.cantidad,
-          0
-        );
-
-      if (disponible < cantidad)
-        throw new Error(
-          "Stock insuficiente"
-        );
-
-      while (
-        restante > 0 &&
-        producto.lotes.length > 0
-      ) {
-
-        const lote =
-          producto.lotes[0];
+        const lote = productoDB.lotes[0];
 
         const usado =
-          Math.min(
-            lote.cantidad,
-            restante
-          );
+          Math.min(lote.cantidad, restante);
 
         restante -= usado;
         lote.cantidad -= usado;
 
+        /* registrar consumo REAL */
+
+        items.push({
+          productId: productoDB.id,
+          cantidad: usado,
+          costoUnitario: lote.costoUnitario
+        });
+
         precioCostoTotal +=
           usado * lote.costoUnitario;
 
-        gananciaTotal +=
-          usado * (
-            precioVenta
-            - lote.costoUnitario
-          );
-
         if (lote.cantidad === 0)
-          producto.lotes.shift();
+          productoDB.lotes.shift();
 
       }
 
-      producto.stock -= cantidad;
+      if (restante > 0) {
+        throw new Error(
+          `Stock insuficiente para ${productoDB.name}`
+        );
+      }
 
-      await producto.save({
-        session
-      });
+      productoDB.stock -= cantidadNecesaria;
+
+      await productoDB.save({ session });
+
+    };
+
+    /* ===================================================== */
+    /* 🧠 SI ES COMBO */
+    /* ===================================================== */
+
+    if (producto.isCombo) {
+
+      for (const item of producto.combo) {
+
+        const productoInterno =
+          await Product.findOne({
+            id: item.productId
+          }).session(session);
+
+        if (!productoInterno)
+          throw new Error(
+            `Producto interno ${item.productId} no encontrado`
+          );
+
+        const cantidadNecesaria =
+          item.qty * cantidad;
+
+        await consumirFIFO(
+          productoInterno,
+          cantidadNecesaria
+        );
+
+      }
 
     }
 
-    /* =============================== */
-    /* REGISTRAR VENTA */
-    /* =============================== */
+    /* ===================================================== */
+    /* 📦 PRODUCTO SIMPLE */
+    /* ===================================================== */
+
+    else {
+
+      await consumirFIFO(
+        producto,
+        cantidad
+      );
+
+    }
+
+    /* ===================================================== */
+    /* 💰 CALCULOS */
+    /* ===================================================== */
+
+    const gananciaTotal =
+      (precioVenta * cantidad) -
+      precioCostoTotal;
+
+    /* ===================================================== */
+    /* 🧾 CREAR VENTA */
+    /* ===================================================== */
 
     const venta =
       new Sale({
@@ -216,32 +158,29 @@ router.post("/", async (req, res) => {
         precioVenta,
 
         precioCosto:
-          precioCostoTotal /
-          cantidad,
+          precioCostoTotal / cantidad,
 
         ganancia:
           gananciaTotal,
+
+        items, // 🔥 CLAVE
 
         fecha:
           new Date()
 
       });
 
-    await venta.save({
-      session
-    });
+    await venta.save({ session });
+
+    /* ===================================================== */
+    /* ✅ COMMIT */
+    /* ===================================================== */
 
     await session.commitTransaction();
 
-    session.endSession();
-
     res.json({
-
-      message:
-        "Venta registrada correctamente",
-
+      message: "Venta registrada",
       venta
-
     });
 
   }
@@ -250,15 +189,17 @@ router.post("/", async (req, res) => {
 
     await session.abortTransaction();
 
-    session.endSession();
-
     console.error(err);
 
-    res.status(400).json({
-
+    res.status(500).json({
       error: err.message
-
     });
+
+  }
+
+  finally {
+
+    session.endSession();
 
   }
 
@@ -266,36 +207,86 @@ router.post("/", async (req, res) => {
 
 // Eliminar venta
 router.delete("/:id", async (req, res) => {
+
+  const session = await mongoose.startSession();
+
   try {
-    const venta = await Sale.findById(req.params.id);
-    if (!venta) {
-      return res.status(404).json({ error: "Venta no encontrada" });
+
+    session.startTransaction();
+
+    const venta = await Sale.findById(req.params.id)
+      .session(session);
+
+    if (!venta)
+      throw new Error("Venta no encontrada");
+
+    /* ===================================================== */
+    /* 🔁 REVERTIR STOCK DESDE ITEMS */
+    /* ===================================================== */
+
+    for (const item of venta.items) {
+
+      const producto = await Product.findOne({
+        id: item.productId
+      }).session(session);
+
+      if (!producto)
+        throw new Error(
+          `Producto ${item.productId} no encontrado`
+        );
+
+      /* devolver stock */
+
+      producto.stock += item.cantidad;
+
+      /* recrear lote EXACTO */
+
+      producto.lotes.push({
+        cantidad: item.cantidad,
+        costoUnitario: item.costoUnitario,
+        fechaIngreso: new Date() // opcional
+      });
+
+      await producto.save({ session });
+
     }
 
-    const producto = await Product.findOne({ id: venta.productId });
-    if (!producto) {
-      return res.status(404).json({ error: "Producto no encontrado" });
-    }
+    /* ===================================================== */
+    /* 🗑 ELIMINAR VENTA */
+    /* ===================================================== */
 
-    // 🔁 Devolver stock
-    producto.stock += venta.cantidad;
+    await venta.deleteOne({ session });
 
-    // ⚠️ Opcional: agregar como lote nuevo (no FIFO real)
-    producto.lotes.push({
-      cantidad: venta.cantidad,
-      costoUnitario: venta.precioCosto
+    /* ===================================================== */
+    /* ✅ COMMIT */
+    /* ===================================================== */
+
+    await session.commitTransaction();
+
+    res.json({
+      message: "Venta eliminada correctamente (reversión exacta)"
     });
 
-    await producto.save();
-
-    await venta.deleteOne();
-
-    res.json({ message: "Venta eliminada y stock restaurado" });
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Error al eliminar venta" });
   }
+
+  catch (err) {
+
+    await session.abortTransaction();
+
+    console.error(err);
+
+    res.status(500).json({
+      error: err.message
+    });
+
+  }
+
+  finally {
+
+    session.endSession();
+
+  }
+
 });
 
 // Obtener todas las ventas

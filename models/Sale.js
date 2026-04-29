@@ -6,6 +6,13 @@ const saleSchema = new mongoose.Schema({
   precioVenta: { type: Number, required: true }, // precio unitario al que se concretó la venta
   precioCosto: { type: Number, required: true }, // costo promedio ponderado de esa venta
   ganancia: { type: Number, required: true },    // ganancia total de esa transacción
+  items: [
+    {
+      productId: Number,
+      cantidad: Number,
+      costoUnitario: Number
+    }
+  ],
   fecha: { type: Date, default: Date.now }       // fecha de la venta
 }, { timestamps: true }); // timestamps añade createdAt y updatedAt automáticamente
 
